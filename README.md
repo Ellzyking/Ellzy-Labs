@@ -1,4 +1,3 @@
-# Ellzy-Labs📜
 <h1>Hi, I'm Elliot! <br/><a href="https://github.com/joshmadakor1">CyberSecurity Professional</a>, <a href="https://www.linkedin.com/in/joshmadakor/">Python Programmer</a>
 
  <h2>👨‍💻 CyberSecurity Projects:</h2>
