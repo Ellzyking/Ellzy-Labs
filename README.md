@@ -1,6 +1,7 @@
 # Ellzy-Labs📜
 <h1>Hi, I'm Elliot! <br/><a href="https://github.com/joshmadakor1">Programmer</a>, <a href="https://www.linkedin.com/in/joshmadakor/">Cybersecurity Professional</a>,
-<h2>👨‍💻 Software Development Projects:</h2>
+
+ <h2>👨‍💻 CyberSecurity Projects:</h2>
  
   - [Active Directory Bulk User Creation](https://github.com/joshmadakor1/AD_PS)
     
