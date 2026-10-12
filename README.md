@@ -7,7 +7,6 @@
     
 <h2>📜 Certification</h2>
 
-
 <h2> 🤳 Connect with me:</h2>
 
 Here are some ideas to get you started:
