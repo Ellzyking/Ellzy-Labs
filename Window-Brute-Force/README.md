@@ -1,4 +1,3 @@
-
 # Project 1: Windows SMB Brute Force Detection (T1110)
 
 ## 1. Overview
