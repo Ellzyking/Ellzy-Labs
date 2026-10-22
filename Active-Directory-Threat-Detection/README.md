@@ -1,5 +1,5 @@
 # Project 2: Purple Team Operations – Active Directory Threat Simulation & Remediation
-> **Executive Report:** [📄 Download Full Technical Project Report (PDF)](./docs/Project-2-Active-Directory-Defense-Report.pdf)
+> **Executive Report:** [📄 Download Full Technical Project Report (PDF)](./Project-2-Active-Directory-Defense-Report.pdf)
 ## 1. Executive Summary
 
 Active Directory (AD) is the primary identity provider for the enterprise, making it a high-priority target for advanced persistent threats (APTs). Because default Windows security auditing often obscures critical security events within massive volumes of benign background noise, organizations face severe visibility gaps.
