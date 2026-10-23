@@ -27,7 +27,7 @@ Welcome to my cybersecurity portfolio! I specialize in Active Directory security
 
 ## 🌐 Connect With Me
 * **GitHub:** [github.com/Ellzyking](https://github.com/Ellzyking)
-* **LinkedIn:** *[Add your LinkedIn profile URL here]
+* **LinkedIn:** *[Add your LinkedIn profile URL here]*
 
 
 
