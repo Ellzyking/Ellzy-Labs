@@ -182,5 +182,3 @@ Building an enterprise-grade environment on limited virtual hardware required re
         <img src="https://i.imgur.com/JiMuVWe.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-
-   
