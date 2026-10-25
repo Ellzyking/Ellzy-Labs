@@ -101,7 +101,7 @@ alert tcp any any -> $HOME_NET any (msg:"CUSTOM DETECT - Possible Nmap SYN Port 
 - `threshold: ... count 20, seconds 5`: Enforces a volumetric state tracker, triggering an alert only when a single source IP (`track by_src`) initiates 20 unique SYN probes within a tight 5-second window, minimizing false positives from normal network jitter.
 
 !Screenshot 2026-10-21 173653.png
-<img src="" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/IopGWLW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
 ## Phase 4: Dual-SIEM Correlation & Threat Hunting
@@ -180,5 +180,31 @@ Building an enterprise-grade environment on limited virtual hardware required re
 1. **Linux LVM Disk Exhaustion (Splunk Containerization):**
     - **Symptom:** Docker container extraction failed with `no space left on device`.
         <img src="https://i.imgur.com/JiMuVWe.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
+
+    - **Root Cause:** The default Ubuntu LVM installation allocated only 12GB to the root volume (`ubuntu--vg-ubuntu--lv`), leaving the remainder of the virtual disk unallocated.
+         <img src="https://i.imgur.com/ziqXD5p.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+    - **Resolution:** Executed `lvextend -l +100%FREE` and `resize2fs` to dynamically expand the live root filesystem to 23GB without downtime, successfully accommodating Splunk's heavy storage requirements
+       <img src="https://i.imgur.com/Vsh23xr.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+        
+        <img src="https://i.imgur.com/JlIokdf.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+2. **Splunk Headless License Acceptance:**
+    - **Symptom:** Splunk Docker container exited immediately with `License not accepted`.
+    - **Root Cause:** Newer Splunk Docker image builds implemented a strict requirement for a secondary license flag covering general terms.
+     <img src="https://i.imgur.com/kVhCg2G.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+        
+    - **Resolution:** I re-deployed the container with the appended environment variable `e "SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com"`.
+      
+     <img src="https://i.imgur.com/tu6J9p1.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+     
+     <img src="https://i.imgur.com/jhZo9PN.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+     
+3. **SIEM Binary Decoding Failures (`UTF-16LE`):**
+    - **Symptom:** Windows Event Logs (`.evtx`) exported via PowerShell appeared in Splunk as broken binary hex (`\xFF\xFE\x00E...`).
+        
+      <img src="https://i.imgur.com/NoVPLT5.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+        
+    - **Root Cause:** PowerShell's `Out-File` default encoding utilizes UTF-16LE, which Splunk's Linux backend could not natively parse, treating it as a raw `ElfFile`.
+    - **Resolution:** Intercepted the ingestion pipeline at the `props.conf` level via Splunk Web, forcing the `CHARSET` to `UTF-16LE` and configuring `KV_MODE=xml` combined with regex event breaking (`(?=<Event)`) to successfully parse the nested XML schema.
+        
+      <img src="https://i.imgur.com/ZorUtwv.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
