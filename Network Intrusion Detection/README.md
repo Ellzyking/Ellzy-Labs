@@ -1,7 +1,7 @@
 # Project 3: Network Intrusion Detection, Protocol Forensics & Dual-SIEM Threat Hunting
 
 ## Engineering Challenges & Root Cause Analysis
-> **Executive Report:** [📄 Download Full Technical Project Report (PDF) ](https://github.com/Ellzyking/Ellzy-Labs/blob/main/Project 3: Network Intrusion Detection, Protocol Forensics & Dual-SIEM Threat Hunting pdf)
+> **Executive Report:** [📄 Download Full Technical Project Report (PDF) ]()
 >
 ## 1. Executive Summary & Architecture
 
