@@ -165,31 +165,30 @@ falsepositives:
     - Legacy applications or non-Windows operating systems lacking AES support
 level: high
 ```
-
 ## 6. Incident Response & SOC Triage Playbook
 
-#### Upon receiving these Level 12 alerts, SOC analysts should follow this structured triage process:
-"
+When Phase 2 detections (100002 or 100004) trigger in an unhardened or partially hardened production environment, SOC analysts should follow this structured triage workflow:
 <img src="https://i.imgur.com/crfzuIS.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+### Playbook A: Kerberoasting Alert (Rule 100002 — Level 12)
+1. **Validate Source & Identity:** Inspect `data.win.eventdata.ipAddress` and `data.win.eventdata.targetUserName` in the Wazuh alert to identify which workstation and domain user requested the `0x17` TGS ticket.
+2. **Assess Target SPN Risk:** Query Active Directory for the targeted `data.win.eventdata.serviceName` (e.g., `svc_sql`). Check administrative group memberships (`Domain Admins`, `Backup Operators`), password age (`pwdLastSet`), and supported encryption attributes (`msDS-SupportedEncryptionTypes`).
+3. **Hunt for Burst Behavior:** Search Event ID 4679 across a 5-minute window from the same source IP. A single `0x17` request may be a legacy application; dozens of `0x17` requests across multiple SPNs indicate automated enumeration (`Rubeus` / `GetUserSPNs.py`).
+4. **Correlate Post-Exploitation:** A ticket request alone does not prove the password was cracked. Hunt for subsequent Event ID 4624 (Logon Type 3 or 10) or Event ID 4672 (Special Privileges Assigned) for `svc_sql` originating from unusual internal hosts.
+5. **Conditional Containment:** If anomalous logons are observed—or if the SPN uses a weak password—rotate the service account password twice (to invalidate existing tickets), isolate the source host, and migrate the account to a Group Managed Service Account (gMSA).
 
-### Triage: Kerberoasting Alerts (Rule 100002)
+### Playbook B: LSASS Process Access Alert (Rule 100004 — Level 12)
+1. **Examine the Accessing Process:** Review `data.win.eventdata.sourceImage` and `data.win.eventdata.sourceProcessId` in the Sysmon Event ID 10 payload to identify the binary touching `lsass.exe`.
+2. **Analyze the Access Mask:** Inspect `data.win.eventdata.grantedAccess`. Masks such as `0x1000` (`PROCESS_QUERY_LIMITED_INFORMATION`) indicate metadata queries, whereas masks containing the `0x0010` bit (`PROCESS_VM_READ`—such as `0x1010`, `0x1410`, or `0x1fffff`) indicate active memory reading capable of credential extraction.
+3. **Correlate File Creation:** Pivot in Wazuh to Sysmon Event ID 11 (FileCreate) on the same host within 30 seconds of the alert to check if a `.dmp` or `.bin` file was written to `C:\Windows\Temp\` or `AppData\Local\Temp\`.
+4. **Immediate Containment:** If `sourceImage` is an unapproved binary, scripting engine (`powershell.exe`, `rundll32.exe`), or LOLBin (`rdrleakdiag.exe`, `procdump.exe`), isolate the endpoint immediately, revoke active Kerberos TGTs for all users logged into that host, and initiate credential rotation.
+## 7. False Positives & Detection Tuning
+* **Kerberoasting (Rule 100002):**
+  * **Common False Positives:** Legacy enterprise appliances (older NAS units, legacy printers) or non-Windows/Linux services joined to Active Directory that do not support AES encryption may legitimately negotiate `0x17` tickets.
+  * **Tuning Strategy:** Audit and document legacy SPNs requiring RC4 while migration to AES is planned. Add specific `<field name="win.eventdata.serviceName" negate="yes">` exclusions in `local_rules.xml` for verified legacy service accounts rather than lowering the alert level globally.
 
-1. **Identify Origin:** Inspect `data.win.eventdata.ipAddress` to trace the internal workstation or server requesting the ticket.
-2. **Assess SPN Privilege:** Check the targeted SPN (`svc_sql`) in Active Directory to determine group memberships (e.g., Domain Admins, Enterprise Admins).
-3. **Correlate Telemetry:** A ticket request alone does not prove the password was cracked. Query the SIEM for subsequent abnormal logon attempts (Event ID 4624) or privilege escalations (Event ID 4672) using the roasted service account identity.
-4. **Containment:** If evidence confirms a successful offline crack, initiate an immediate password reset for the compromised service account.
-
-### Triage: LSASS Process Access Alerts (Rule 100003)
-
-1. **Identify Parent Process:** Inspect `data.win.eventdata.sourceImage` to find the process accessing LSASS (e.g., `cmd.exe`, `powershell.exe`, or unknown binaries).
-2. **Check User Context:** Verify the executing account (`data.win.eventdata.sourceUser`).
-3. **Immediate Containment:** If the accessing process is unverified or malicious, treat the endpoint as actively compromised. Isolate the machine from the network immediately via EDR/firewall.
-
-## 7. False Positives & Tuning
-
-- **Kerberoasting (T1558.003):** Legacy enterprise appliances (older NAS units, legacy printers, or deprecated Linux/Unix integration daemons) may lack AES Kerberos support and legitimately negotiate RC4 (`0x17`). Detection rules must be tuned with an SPN exemption list rather than disabling the rule entirely.
-- **LSASS Access (T1003.001):** Legitimate Endpoint Detection and Response (EDR) sensors, antivirus scanners, and IT diagnostic tools (e.g., Microsoft Process Explorer, Task Manager) routinely access LSASS during system diagnostics. Tuning requires whitelisting verified binary paths, authentic digital signatures, and known binary hashes.
-
+* **LSASS Process Access (Rule 100004):**
+  * **Common False Positives:** Legitimate Endpoint Detection and Response (EDR) sensors, antivirus scanners, and IT diagnostic tools (e.g., Microsoft Process Explorer, Task Manager) routinely access LSASS during system diagnostics.
+  * **Tuning Strategy:** Tuning requires whitelisting verified binary paths, authentic digital signatures, and known binary hashes.
 ## 8. Response and Strategic Mitigations
 
 ### Incident Containment
@@ -333,30 +332,3 @@ Invoke-AtomicTest T1003.001
 
 #### *Microsoft Defender / AMSI blocking the Atomic Red Team T1003.001-13 `rdrleakdiag.exe` LSASS dump execution (`Exit code: 1`).*
 <img src="https://i.imgur.com/DN5ezfk.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
-## 12. Incident Response & SOC Triage Playbook
-
-When Phase 2 detections (`100002` or `100003`) trigger in an unhardened or partially hardened production environment, SOC analysts should follow this structured triage workflow:
-
-### Playbook A: Kerberoasting Alert (Rule 100002 — Level 12)
-
-1. **Validate Source & Identity:** Inspect `data.win.eventdata.ipAddress` and `data.win.eventdata.targetUserName` in the Wazuh alert to identify which workstation and domain user requested the `0x17` TGS ticket.
-2. **Assess Target SPN Risk:** Query Active Directory for the targeted `data.win.eventdata.serviceName` (e.g., `svc_sql`). Check administrative group memberships (`Domain Admins`, `Backup Operators`), password age (`pwdLastSet`), and supported encryption attributes (`msDS-SupportedEncryptionTypes`).
-3. **Hunt for Burst Behavior:** Search Event ID `4769` across a 5-minute window from the same source IP. A single `0x17` request may be a legacy application; dozens of `0x17` requests across multiple SPNs indicate automated enumeration (`Rubeus` / `GetUserSPNs.py`).
-4. **Correlate Post-Exploitation:** A ticket request alone does not prove the password was cracked. Hunt for subsequent Event ID `4624` (Logon Type `3` or `10` ) but i used (10) or Event ID `4672` (Special Privileges Assigned) for `svc_sql` originating from unusual internal hosts.
-5. **Conditional Containment:** If anomalous logons are observed—or if the SPN uses a weak password—rotate the service account password twice (to invalidate existing tickets), isolate the source host, and migrate the account to a Group Managed Service Account (gMSA).
-
-### Playbook B: LSASS Process Access Alert (Rule 100003 — Level 12)
-
-1. **Examine the Accessing Process:** Review `data.win.eventdata.sourceImage` and `data.win.eventdata.sourceProcessId` in the Sysmon Event ID `10` payload to identify the binary touching `lsass.exe`.
-2. **Analyze the Access Mask:** Inspect `data.win.eventdata.grantedAccess`. Masks such as `0x1000` (`PROCESS_QUERY_LIMITED_INFORMATION`) indicate metadata queries, whereas masks containing the `0x0010` bit (`PROCESS_VM_READ`—such as `0x1010`, `0x1410`, or `0x1Fffff`) indicate active memory reading capable of credential extraction.
-3. **Correlate File Creation:** Pivot in Wazuh to Sysmon Event ID `11` (`FileCreate`) on the same host within 30 seconds of the alert to check if a `.dmp` or `.bin` file was written to `C:\Windows\Temp\` or `AppData\Local\Temp\`.
-4. **Immediate Containment:** If `sourceImage` is an unapproved binary, scripting engine (`powershell.exe`, `rundll32.exe`), or LOLBin (`rdrleakdiag.exe`, `procdump.exe`), isolate the endpoint immediately, revoke active Kerberos TGTs for all users logged into that host, and initiate credential rotation.
-
-## 13. False Positives & Detection Tuning
-
-- **Kerberoasting (Rule 100002):**
-    - **Common False Positives:** Legacy network appliances, older SQL/IIS integrations, or non-Windows/Linux services joined to Active Directory that do not support AES encryption may legitimately negotiate `0x17` tickets.
-    - **Tuning Strategy:** Audit and document legacy SPNs requiring RC4 while migration to AES is planned. Add specific `<field name="win.eventdata.serviceName" negate="yes">` exclusions in `local_rules.xml` for verified legacy service accounts rather than lowering the alert level globally.
-- **LSASS Process Access (Rule 100003):**
-    - **Common False Positives:** Legitimate Endpoint
