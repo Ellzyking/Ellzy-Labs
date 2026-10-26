@@ -44,29 +44,13 @@ Atomic Red Team (`Rubeus`) was utilized to request an RC4-encrypted (`0x17`) tic
 klist purge
 Invoke-AtomicTest T1558.003
 ```
-
-!Screenshot 2026-10-15 071529.png
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/sdsqEsd.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-
 
 #### Evidence: Kerberos Telemetry (Event 4769)
 
 On `DC01`, the Kerberos ticket request was logged under Event ID 4769. The critical forensic indicators were `Ticket Options: 0x40810000`, `Ticket Encryption Type: 0x17` (legacy RC4-HMAC), and `Service Name: svc_sql`.
 
-*Figure 1: Atomic Red Team / Rubeus output displaying the extracted `$krb5tgs$23$*svc_sql...` RC4 ticket hash.*
-<br />
-<br />
-: <br/>
-<img src="https://i.imgur.com/4FQqS4p.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-
-!Screenshot 2026-10-19 101156.png
+*: Atomic Red Team / Rubeus output displaying the extracted `$krb5tgs$23$*svc_sql...` RC4 ticket hash.*
 
 #### Rule: Kerberoasting Detection (ID: 100002)
 
@@ -92,13 +76,7 @@ Native Event ID 4769 generates extreme background noise. Wazuh evaluates these e
 
 #### *Wazuh Level 12 Alert successfully isolating the malicious `0x17` ticket request while filtering out benign domain traffic.*
 
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/3yOe3cM.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-16 085247.png
 
 ### Scenario B: LSASS Credential Access (T1003.001)
 
@@ -113,24 +91,13 @@ Atomic Red Team was used to execute credential access modules, invoking native L
 ```
 Invoke-AtomicTest T1003.001
 ```
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/N2InIle.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-#### Evidence: Sysmon Kernel-Level Process Access (Event 10)
 
+#### Evidence: Sysmon Kernel-Level Process Access (Event 10)
 Native Windows event logs do not deeply monitor process-to-process access. I deployed Microsoft Sysmon to explicitly target `lsass.exe`. Sysmon captured Event ID 10 with `GrantedAccess: 0x1000`, indicating limited process-information access. This event alone does not prove LSASS memory was read; look for the `0x0010` memory-read bit in `GrantedAccess` (often appearing in combined masks like `0x1010`) and correlate with other evidence.
 
 #### *Execution of LSASS memory extraction techniques via Atomic Red Team.*
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/fSQGHcF.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-
 
 #### Rule: LSASS Process Access Detection (ID: 100003)
 
@@ -157,16 +124,9 @@ I configured the Windows 11 Wazuh agent (`ossec.conf`) to actively ingest the `M
     </mitre>
   </rule>
 ```
-
+By splitting the detection, Rule 100003 acts as a broad tracker for all LSASS access, while Rule 100004 provides a high-fidelity alert specifically for the memory-read access masks (0x1010, 0x1410, 0x1fffff) observed during credential dumping."
 #### *Wazuh Level 12 Alert detecting potential LSASS process access via Sysmon telemetry.*
-
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/4llgVnC.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-17 101828.png
 
 ## 5. Vendor-Neutral Sigma Rule Translation
 
@@ -210,14 +170,7 @@ level: high
 
 #### Upon receiving these Level 12 alerts, SOC analysts should follow this structured triage process:
 "
-
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/crfzuIS.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-17 101854.png
 
 ### Triage: Kerberoasting Alerts (Rule 100002)
 
@@ -248,31 +201,18 @@ level: high
 
 - **Decommission RC4 Encryption:** Enforce AES-128 and AES-256 for Kerberos encryption domain-wide via Group Policy (`Network security: Configure encryption types allowed for Kerberos`). Completely disable DES and RC4 encryption types.
 
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/mWzj5ck.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-    !Screenshot 2026-10-19 090454.png
-    
+
 - **Service Account Hardening:** Transition standard service accounts to Group Managed Service Accounts (gMSA). gMSAs utilize 128-character, randomly generated passwords that automatically rotate, rendering offline dictionary cracking ineffective.
 - **Enable Microsoft Defender Credential Guard:** Use virtualization-based security (VBS) on Windows endpoints to isolate credential secrets, preventing them from being accessed directly via the standard LSASS process. *Note: While it significantly reduces the attack surface, it does not block every form of credential access.*
 - **Attack Surface Reduction (ASR):** Enable the Windows Defender ASR rule `Block credential stealing from the Windows local security authority subsystem` (`9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2`).
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/TljKLyS.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-20 112121.png
 
-## 9. Business Outcomes & Lessons Learned
-
-- **Reduced MTTD (Mean Time to Detect):** Successfully elevated lower-priority telemetry into high-priority Level 12 SOC alerts mapped directly to the MITRE ATT&CK framework, enabling rapid response to active breaches.
-- **Reduced Alert Fatigue:** Engineered strict PCRE2 regex logic to filter out benign domain traffic, ensuring analysts only spend time investigating genuine, high-fidelity threats.
-- **Closed Visibility Gaps:** Demonstrated that SIEM engineering requires supplementary tooling (like Sysmon) to bridge the gap where native operating system auditing fails to provide sufficient forensic depth.
-- 
+### 9. What This Demonstrated
+* **Enterprise Infrastructure Deployment:** Built and configured a Windows Server 2019 Domain Controller to serve as a realistic target environment.
+* **Adversarial Emulation:** Executed live, mapped MITRE ATT&CK techniques (T1558.003 Kerberoasting, T1003.001 OS Credential Dumping) using Atomic Red Team.
+* **Endpoint Telemetry Generation:** Deployed Sysmon via GPO and ingested high-fidelity endpoint logs into Wazuh for centralized visibility.
+* **Custom Detection Engineering:** Authored custom Wazuh SIEM rules using Regex/PCRE2 to detect specific attack artifacts, tuning out benign noise to create high-fidelity alerts.
 
 ## 10. Phase 3: Hardening & Remediation (Security Architecture)
 
@@ -306,27 +246,14 @@ To immediately apply the policy across the domain and flush existing policy cach
 ```powershell
 gpupdate /force
 ```
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/XFtwteI.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-19 090645.png
 
 #### The "Why" (Architectural Impact)
 
 By removing `RC4_HMAC_MD5` from the Kerberos Key Distribution Center (KDC) allowed encryption list on `DC01`, the KDC refuses to issue TGS tickets when an attacking tool explicitly requests encryption type `0x17`. Furthermore, forcing ticket negotiation up to `AES256_HMAC_SHA1` (`0x12`) introduces PBKDF2-like key derivation complexity, making offline brute-force cracking computationally infeasible when paired with strong service account passwords.
 
 #### Remediation 2: Blocking LSASS Credential Access (LSA Protection & Defender Enforcement)
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/lUtCsEO.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-17 140750.png
-
 #### Technical Vulnerability
 
 The Local Security Authority Subsystem Service (`lsass.exe`) caches active authentication tokens, Kerberos tickets, and NTLM hashes in system memory. In an unhardened Windows environment, a local administrator with the `SeDebugPrivilege` right can invoke native Windows APIs (such as `MiniDumpWriteDump` via `comsvcs.dll` or diagnostic utilities like `rdrleakdiag.exe`) to open a handle to `lsass.exe` and dump its memory contents to disk.
@@ -375,14 +302,7 @@ PowerShell
 klist purge
 Invoke-AtomicTest T1558.003
 ```
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/HPjfzyC.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-19 101104.png
-
 #### Verification & Correlation with Phase 1
 
 - **Phase 1 Baseline (Vulnerable):** `Rubeus` successfully requested an RC4 ticket for `svc_sql`, extracted the `$krb5tgs$23$*svc_sql...` hash to the console, and generated Event ID `4769` (`TicketEncryptionType: 0x17`), triggering Wazuh Rule `100002` (Level 12).
@@ -391,13 +311,7 @@ Invoke-AtomicTest T1558.003
 - **SIEM Telemetry Proof:** Because no RC4 (`0x17`) ticket was issued by the KDC, Wazuh Rule `100002` generated **0 new alerts**, confirming the vulnerability was closed at the protocol negotiation layer.
 
 #### *Rubeus failing with `InitializeSecurityContext failed` after Group Policy disabled RC4 Kerberos ticket negotiation on DC01.*
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/4FQqS4p.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-19 101156.png
 
 ### Re-Test 2: LSASS Credential Access Validation (T1003.001)
 
@@ -418,13 +332,7 @@ Invoke-AtomicTest T1003.001
 - **SIEM Telemetry Proof:** Because the malicious script was blocked at the PowerShell parser stage before `rdrleakdiag.exe` could spawn or request a handle to `lsass.exe`, Sysmon recorded no new Event ID `10` entries for the test, and Wazuh Rule `100003` remained quiet.
 
 #### *Microsoft Defender / AMSI blocking the Atomic Red Team T1003.001-13 `rdrleakdiag.exe` LSASS dump execution (`Exit code: 1`).*
-<br />
-<br />
-: <br/>
 <img src="https://i.imgur.com/DN5ezfk.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br /> 
-!Screenshot 2026-10-19 103418.png
 
 ## 12. Incident Response & SOC Triage Playbook
 
