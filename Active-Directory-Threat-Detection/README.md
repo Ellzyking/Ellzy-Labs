@@ -139,17 +139,23 @@ I configured the Windows 11 Wazuh agent (`ossec.conf`) to actively ingest the `M
 **Custom Wazuh Rule (local_rules.xml):**
 
 ```
-<group name="windows,sysmon,lsass,">
-  <rule id="100003" level="12">
+<!-- General LSASS Access (Low noise tracker) -->
+  <rule id="100003" level="5">
     <if_group>windows</if_group>
     <field name="win.system.eventID">^10$</field>
     <match>lsass.exe</match>
-    <description>Credential Access: LSASS Process Access Detected</description>
+    <description>Sysmon: Process accessed LSASS memory (Informational/Low Level).</description>
+  </rule>
+
+  <!-- High-Fidelity LSASS Memory Read (Credential Dumping) -->
+  <rule id="100004" level="12">
+    <if_sid>100003</if_sid>
+    <field name="win.eventdata.grantedAccess" type="pcre2">(?i)^0x(1010|1410|1fffff)$</field>
+    <description>Sysmon: High-fidelity LSASS memory read access detected (Potential Credential Dumping).</description>
     <mitre>
       <id>T1003.001</id>
     </mitre>
   </rule>
-</group>
 ```
 
 #### *Wazuh Level 12 Alert detecting potential LSASS process access via Sysmon telemetry.*
