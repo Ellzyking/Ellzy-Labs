@@ -1,10 +1,10 @@
 # Project 1: Windows SMB Brute Force Detection (T1110)
 
 ## 1. Overview
-This project focuses on engineering custom detections for network-based brute-force attacks. As default SIEM rules often generate extreme alert fatigue by alerting on every single failed login, the objective of this lab was to simulate a targeted SMB brute-force attack, analyze the resulting Event Tracing for Windows (ETW) telemetry, and engineer state-tracking correlation rules. By utilizing Wazuh and Sysmon, I developed both a Wazuh XML rule and a vendor-neutral Sigma rule that detect the specific behavior of a brute-force attack (frequency and threshold) rather than isolated incidents.
+This project focuses on engineering custom detections for network-based brute-force attacks. As default SIEM rules often generate extreme alert fatigue by alerting on every single failed login, the objective of this lab was to simulate a targeted SMB brute-force attack, analyze the resulting Windows Security log telemetry, and engineer state-tracking correlation rules. By utilizing Wazuh and Sysmon, I developed both a Wazuh XML rule and a vendor-neutral Sigma rule that detect the specific behavior of a brute-force attack (frequency and threshold) rather than isolated incidents.
 
 ## 2. Lab Architecture
-The environment was constructed entirely within Oracle VirtualBox on an isolated Host-Only bridged network (`192.168.56.x`) to ensure safe malware and attack simulation.
+The environment was constructed entirely within Oracle VirtualBox on an isolated Host-Only network (`192.168.56.x`) to ensure safe malware and attack simulation.
 *   **SIEM Manager:** Wazuh Manager running on Ubuntu Linux.
 *   **Target Endpoint:** Windows 11 Enterprise (IP: `192.168.56.101`). This machine was configured with Sysmon and the Wazuh Agent to forward detailed security telemetry to the manager.
 *   **Attack System:** Kali Linux (Hostname: `Ellzy`, IP: `192.168.56.103`) equipped with penetration testing tools like Hydra and NetExec.
@@ -43,15 +43,15 @@ nxc smb 192.168.56.101 -u svc_test_account -p passwords.txt --local-auth
 The attack successfully generated Event ID 4625 (Failed Logon) logs corresponding to the incorrect passwords in the wordlist, immediately followed by an Event ID 4624 (Successful Logon) when the correct password was executed. 
 <img src="https://i.imgur.com/nZ7kmAk.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
  
-*Figure 1: Event ID 4625 capturing the attacker IP (`192.168.56.103`), the targeted account (`svc_test_account`), and the `0xc000006a` (bad password) subStatus code.*
+: Event ID 4625 capturing the attacker IP (`192.168.56.103`), the targeted account (`svc_test_account`), and the `0xc000006a` (bad password) subStatus code.*
 
 <img src="https://i.imgur.com/8PuIMQR.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
-*Figure 2: Event ID 4624 showing the final successful authentication following the burst of failures.*
+: Event ID 4624 showing the final successful authentication following the burst of failures.*
 
 ## 6. Detection
 To accurately identify this attack without flooding the SOC with false positives, I engineered a custom detection rule that looks for 5 identical failures from the exact same source IP within 60 seconds.<img                                                                                   <img 
 <img src="https://i.imgur.com/YOqlSqt.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
-*Figure 3: Wazuh Dashboard confirming the custom correlation rule (Rule ID: 100001) successfully fired in response to the attack simulation.*
+: Wazuh Dashboard confirming the custom correlation rule (Rule ID: 100001) successfully fired in response to the attack simulation.*
 
 **Wazuh XML Correlation Rule (ID: 100001)**
 This rule was configured in `/var/ossec/etc/rules/local_rules.xml` on the Wazuh Manager. It uses a parent-child relationship (`if_matched_sid`), meaning it only evaluates logs that have already triggered the baseline Windows failed login rule (60122). 
@@ -73,26 +73,23 @@ This rule was configured in `/var/ossec/etc/rules/local_rules.xml` on the Wazuh 
 To demonstrate vendor-agnostic detection engineering, I translated the logic into a Sigma rule. This ensures the detection can be rapidly compiled into Splunk SPL, KQL (Microsoft Sentinel), or Elastic queries. Notice the specific filtering for `LogonType: 3` (Network) and `10` (RemoteInteractive) to filter out physical keyboard typos.
 
 ```yaml
-title: Windows Network Logon Brute Force
-description: Detects 5 or more failed network logon attempts (Event ID 4625) within a 60-second window.
-author: Ellzy
-date: 2026/10/13
-tags:
-    - attack.credential_access
-    - attack.t1110.001
-logsource:
-    product: windows
-    service: security
+title: Failed Network Logon
+name: failed_network_logon
+logsource: {product: windows, service: security}
 detection:
-    selection:
-        EventID: 4625
-        LogonType:
-            - 3
-            - 10
-    condition: selection | count() >= 5
-timeframe: 1m
+  selection: {EventID: 4625, LogonType: [3, 10]}
+  condition: selection
+---
+title: Brute Force - 5+ Failed Logons From One Source
+correlation:
+  type: event_count
+  rules: [failed_network_logon]
+  group-by: [IpAddress]
+  timespan: 60s
+  condition: {gte: 5}
 level: high
 ```
+* **Note on Detection Logic:** While the Sigma correlation rule strictly filters for network and RDP logons (LogonType: [3, 10]), the custom Wazuh rule deployed in this lab evaluates all Event ID 4625 occurrences regardless of logon type to maximize visibility across local and network authentication failures.
 
 ## 7. Analyst Triage
 Upon receiving this Level 10 alert, a Tier 1 Analyst should:
