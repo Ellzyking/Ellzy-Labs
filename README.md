@@ -13,7 +13,7 @@ Welcome to my cybersecurity portfolio! I specialize in Active Directory security
 * **Log Ingestion:** Integrated Windows Security logs with Wazuh for centralized telemetry collection and parsing.
 * **Detection Engineering:** Authored custom correlation rules in Wazuh and Sigma to detect high-volume failed network logons (Event ID 4625) originating from a single source.
 
-### 🔗 https://github.com/Ellzyking/Ellzy-Labs/blob/main/Project_2_Purple_Team_Operations__Active_Directory_Threat_Simulation__Remediation.pdf
+### 🔗 https://github.com/Ellzyking/Ellzy-Labs/tree/main/Active-Directory-Threat-Detection.pdf
 * **Architecture & Emulation:** Deployed a Windows Server 2019 Domain Controller and executed Kerberoasting (T1558.003) and LSASS credential dumping (T1003.001) using Atomic Red Team.
 * **Detection (Blue):** Engineered custom Level 12 Wazuh rules targeting RC4 ticket encryption and Sysmon Event ID 10 process access, translating the logic into vendor-neutral Sigma rules.
 * **Remediation & Purple Teaming:** Disabled legacy RC4 Kerberos encryption domain-wide via Group Policy and enforced Windows Defender ASR rules, verifying complete neutralization through iterative re-testing.
