@@ -18,7 +18,7 @@ Welcome to my cybersecurity portfolio! I specialize in Active Directory security
 * **Detection (Blue):** Engineered custom Level 12 Wazuh rules targeting RC4 ticket encryption and Sysmon Event ID 10 process access, translating the logic into vendor-neutral Sigma rules.
 * **Remediation & Purple Teaming:** Disabled legacy RC4 Kerberos encryption domain-wide via Group Policy and enforced Windows Defender ASR rules, verifying complete neutralization through iterative re-testing.
 
-### 🔗### 🔗### 🔗 [Project 3: Suricata Network Intrusion Detection with Wazuh & Splunk](Network%20Intrusion%20Detection)
+### 🔗### [Project 3: Suricata Network Intrusion Detection with Wazuh & Splunk](Network%20Intrusion%20Detection)
 * **Network Visibility:** Deployed Suricata as an IDS to capture raw network flow telemetry and alert on volumetric reconnaissance (Nmap SYN scans).
 * **Dual-SIEM Pipeline:** Ingested `eve.json` network logs into both Wazuh for signature-driven alerting and Splunk for statistical threat hunting.
 * **Threat Hunting & Triage:** Authored SPL queries to extract anomalous process paths (`props.conf` XML parsing) and correlated network top-talkers with endpoint execution logs.
