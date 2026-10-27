@@ -26,7 +26,6 @@ Welcome to my cybersecurity portfolio! I specialize in Active Directory security
 
 ## 📜 Certifications & Studies
 * **CompTIA Security+** (In Progress / Preparing)
-* **Active Directory Security & Detection Engineering** (Hands-on Lab Specialization)
 
 ---
 
