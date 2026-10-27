@@ -31,7 +31,9 @@ Welcome to my cybersecurity portfolio! I specialize in Active Directory security
 
 ## 🌐 Connect With Me
 * **GitHub:** [github.com/Ellzyking](https://github.com/Ellzyking)
-* **LinkedIn:** [linkedin.com/Adeniran Elliot](www.linkedin.com/in/elliot-segun-adeniran-99943737b)
+* **LinkedIn:** [www.linkedin.com/in/elliot-segun-adeniran-99943737b]
+
+
 
 
 
