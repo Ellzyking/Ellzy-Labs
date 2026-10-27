@@ -5,7 +5,7 @@
 >
 ## 1. Executive Summary & Architecture
 
-As adversaries are increasingly leverage fileless malware and living-off-the-land (LOTL) techniques to evade endpoint security, robust network traffic analysis (NTA) will become a critical fail-safe. The objective of this project was to architect a dedicated Network Intrusion Detection System (NIDS), engineer custom signatures for volumetric network anomalies, and correlate live packet captures with endpoint telemetry across a Dual-SIEM environment.
+As adversaries are increasingly leveraging fileless malware and living-off-the-land (LOTL) techniques to evade endpoint security, robust network traffic analysis (NTA) will become a critical fail-safe. The objective of this project was to architect a dedicated Network Intrusion Detection System (NIDS), engineer custom signatures for volumetric network anomalies, and correlate live packet captures with endpoint telemetry across a Dual-SIEM environment.
 
 This project demonstrates the ability to intercept raw Layer 2 traffic via promiscuous sniffing, dissect TCP session states at the packet level, and translate unindexed wire data into actionable threat hunting intelligence using Splunk (SPL) and Wazuh.
 
@@ -52,12 +52,9 @@ Bash
 sudo nmap -sS -p 1-1024 -T4 -v 192.168.56.110
 ```
 
-By manipulating the TCP handshake, the attacker sends only the initial `SYN` packet. When the target replies with `SYN-ACK`, the attacker abruptly sends a `RST` (Reset) packet. Because the session never reaches the `ESTABLISHED` state, the Windows kernel drops the socket connection before passing it to the application layer, completely bypassing native OS audit logs.
+By manipulating the TCP handshake, the attacker sends only the initial `SYN` packet. When the target replies with `SYN-ACK`, the attacker abruptly sends a `RST` (Reset) packet. Because the session never reaches the `ESTABLISHED` state, the Windows kernel drops the socket connection before passing it to the application layer, evades default logging native OS audit logs.
 
-*(Insert Figure 1: Kali terminal executing the Nmap SYN scan)*`!Nmap Scan`
 <img src="https://i.imgur.com/NlKwH0j.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
 
 ## Phase 2: Protocol Forensics & Packet Dissection
 
@@ -77,10 +74,8 @@ tcp.flags.syn == 1 && tcp.flags.ack == 0
 - **Connection State:** Wireshark's TCP dissector flagged the streams as `[Conversation completeness: Incomplete, SYN_SENT (1)]`.
 - **Behavioral Anomaly:** The capture revealed dozens of isolated `SYN` requests originating from a single IP (`192.168.56.103`) targeting sequential ports on `192.168.56.110` within milliseconds—a clear indicator of automated port enumeration.
 
-*(Insert Figure 2: Wireshark GUI displaying the filtered SYN packets and expanded TCP flag details)*`!Wireshark Capture`
 <img src="https://i.imgur.com/WeBzfUU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
+
 ## Phase 3: Custom Detection Engineering
 
 While Suricata successfully logged the raw flow data, default signature sets (like Emerging Threats) are typically optimized for payload analysis and exploit delivery, meaning raw SYN packets often bypass default alert triggers.
@@ -96,18 +91,17 @@ alert tcp any any -> $HOME_NET any (msg:"CUSTOM DETECT - Possible Nmap SYN Port 
 ```
 
 **Detection Logic:**
+- "The rule uses `flags:S,12` to match TCP SYN packets while masking the two reserved bits, targeting raw packets rather than established sessions. The threshold tracks the volume of matching packets—triggering an alert after 20 packets—rather than counting unique destination ports. Note: High-volume legitimate applications or misconfigured network devices generating rapid SYN packets could trigger false positives."
 
-- `flags:S,12`: Inspects the TCP control bits specifically for `SYN`, ignoring sessions containing `ACK` or `RST`.
-- `threshold: ... count 20, seconds 5`: Enforces a volumetric state tracker, triggering an alert only when a single source IP (`track by_src`) initiates 20 unique SYN probes within a tight 5-second window, minimizing false positives from normal network jitter.
 
-!Screenshot 2026-10-21 173653.png
 <img src="https://i.imgur.com/IopGWLW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
+
 ## Phase 4: Dual-SIEM Correlation & Threat Hunting
 
 With the detection engine validated, telemetry was piped into two distinct SIEM architectures to demonstrate both signature-driven alerting (Wazuh) and statistical threat hunting (Splunk).
-
+```
+("192.168.56.103") (source="/var/log/suricata/eve.json" OR source="Security.xml") | stats count by source, event_type
+```
 ### 4.1 Wazuh Pipeline Integration
 
 The Wazuh Agent was configured via `<localfile>` in `ossec.conf` to continuously ingest Suricata's Extensible Event Format (`eve.json`). Wazuh's native decoders automatically parsed the JSON arrays, providing a low-latency, centralized dashboard for immediate triage.
@@ -130,10 +124,10 @@ source="/var/log/suricata/eve.json" (event_type=flow OR event_type=alert)
 | sort - count
 | head 10
 ```
+- **Finding:** Identified a high volume of inbound TCP SYN packets from a single source IP, confirming automated port scanning activity.
 
 <img src="https://i.imgur.com/4nI1BFI.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
+
 **Hunt 2: Logon Activity Tracking (Credential Abuse)**
 Pivoting from network data to endpoint telemetry, Windows Security logs (Event ID 4624/4625) were analyzed to track authentication behavior across the domain, grouping attempts by source IP and target account to identify potential brute-force or password spraying activity.
 
@@ -148,12 +142,9 @@ source="Security.xml"
 | stats count by SourceIP, TargetUser, EventID
 | sort - count
 ```
-
-*(Insert Figure 6: Splunk Statistics table displaying authentication counts by TargetUser)*`!Logon Activity`
-
+- **Finding:** "Correlated Suricata network alerts with endpoint logs to confirm the malicious payload reached the target application."
+ 
 <img src="https://i.imgur.com/DfYkShJ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
 
 **Hunt 3: Rare Processes (Long-Tail Anomaly Detection - T1059)**
 Because adversaries frequently execute custom payloads or rarely used LOLBins (Living-off-the-Land Binaries), Sysmon Event ID 1 (Process Creation) logs were analyzed using long-tail statistical filtering to isolate outlier executables.
@@ -166,12 +157,12 @@ source="Sysmon.xml"
 | search EventID=1
 | rex "Name='Image'>(?<ProcessPath>[^<]+)"
 | rex "Name='CommandLine'>(?<CommandLine>[^<]+)"
-| stats count by ProcessPath, CommandLine
-| rare limit=10 ProcessPath
+| rex "Name='Image'>(?<ProcessPath>[^<]+)" | rare limit=10 ProcessPath
+
 ```
+- **Finding:** "Extracted the executed process paths, revealing an anomalous execution sequence spawned by the compromised service."
+
 <img src="https://i.imgur.com/7DTmdvr.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
 
 ## Engineering Challenges & Root Cause Analysis
 
@@ -193,7 +184,7 @@ Building an enterprise-grade environment on limited virtual hardware required re
     - **Root Cause:** Newer Splunk Docker image builds implemented a strict requirement for a secondary license flag covering general terms.
      <img src="https://i.imgur.com/kVhCg2G.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
         
-    - **Resolution:** I re-deployed the container with the appended environment variable `e "SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com"`.
+    - **Resolution:** I re-deployed the container with the appended environment variable `-e "SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com"`.
       
      <img src="https://i.imgur.com/tu6J9p1.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
      
@@ -206,5 +197,35 @@ Building an enterprise-grade environment on limited virtual hardware required re
         
     - **Root Cause:** PowerShell's `Out-File` default encoding utilizes UTF-16LE, which Splunk's Linux backend could not natively parse, treating it as a raw `ElfFile`.
     - **Resolution:** Intercepted the ingestion pipeline at the `props.conf` level via Splunk Web, forcing the `CHARSET` to `UTF-16LE` and configuring `KV_MODE=xml` combined with regex event breaking (`(?=<Event)`) to successfully parse the nested XML schema.
-        
-      <img src="https://i.imgur.com/ZorUtwv.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+```ini
+[XmlWinEventLog]
+CHARSET = UTF-16LE
+KV_MODE = xml
+LINE_BREAKER = (?=<Event)
+```
+## Incident Response & SOC Triage
+
+1. **Verify the Source:** Inspect the Suricata alert to determine if the scanning IP is external or internal.
+2. **Correlate with Endpoint:** Pivot into Splunk using the target's IP to check `Security.xml` or Sysmon logs for successful logons or process executions immediately following the network alert.
+3. **Containment:** If endpoint logs show successful exploitation or lateral movement, isolate the compromised host. Block the scanning source IP at the perimeter firewall.
+
+## False Positives & Tuning
+
+* **Vulnerability Scanners:** Authorized internal enterprise vulnerability scanners (e.g., Nessus, Qualys) will trigger these network alerts.
+* **Tuning Strategy:** Add BPF (Berkeley Packet Filter) exclusions in Suricata or create suppression rules for known, authorized scanner IP addresses.
+
+## Strategic Mitigations
+
+* **Network Segmentation:** Place externally facing services in an isolated DMZ. Ensure strict firewall rules deny initiation of traffic from the DMZ into the internal network.
+* **Service Hardening:** Disable unnecessary ports and services on internet-facing servers to reduce the available attack surface.
+
+## Lessons Learned
+
+* **Log Parsing:** Properly configuring `props.conf` is critical for ensuring JSON network logs (like `eve.json`) are parsed correctly in Splunk, preventing expensive search-time field extractions.
+* **Network vs. Endpoint Visibility:** Network alerts provide the "how" (the delivery mechanism), but endpoint logs are required to determine the "what" (whether the attack actually succeeded).
+
+
+## Lessons Learned
+* **Log Parsing:** Properly configuring `props.conf` is critical for ensuring JSON network logs (like `eve.json`) are parsed correctly in Splunk, preventing expensive search-time field extractions.
+* **Network vs. Endpoint Visibility:** Network alerts provide the "how" (the delivery mechanism), but endpoint logs are required to determine the "what" (whether the attack actually succeeded).
