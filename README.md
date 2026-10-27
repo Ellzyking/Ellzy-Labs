@@ -8,14 +8,20 @@ Welcome to my cybersecurity portfolio! I specialize in Active Directory security
 
 ## 🛡️ Cybersecurity Projects
 
-### 🔹 [Project 2: Purple Team Operations – Active Directory Threat Simulation & Remediation](./Active-Directory-Threat-Detection/README.md)
-* **Architecture:** Windows Server 2019 (DC01), Windows 11 Enterprise, Ubuntu Linux (Wazuh v4.14.1), Microsoft Sysmon.
-* **Emulation (Red):** Executed Kerberoasting (T1558.003) via Rubeus and LSASS credential dumping (T1003.001) using native LOLBins via Atomic Red Team.
-* **Detection (Blue):** Engineered custom Level 12 Wazuh rules (PCRE2 regex) targeting RC4 ticket encryption (0x17) and Sysmon Event ID 10 process access. Translated detection logic to vendor-neutral Sigma rules.
-* **Remediation & Purple Teaming:** Disabled legacy RC4 Kerberos encryption domain-wide via Group Policy and enforced Windows Defender Attack Surface Reduction (ASR) rules. Verified complete neutralization through iterative re-testing.
+### 🔗 [Project 1: Windows Brute-Force Detection & Telemetry Analysis](Windows_Brute_Force_Folder_Name_Here)
+* **Architecture:** Configured a local virtualized environment to simulate network authentication attacks against a Windows endpoint.
+* **Log Ingestion:** Integrated Windows Security logs with Wazuh for centralized telemetry collection and parsing.
+* **Detection Engineering:** Authored custom correlation rules in Wazuh and Sigma to detect high-volume failed network logons (Event ID 4625) originating from a single source.
 
-### 🔹 [Project 1: Windows Brute-Force Detection & Telemetry Analysis](./Window-Brute-Force/README.md)
-* Telemetry ingestion, authentication failure analysis, and baseline monitoring for Windows endpoint environments.
+### 🔗 [Project 2: Purple Team Operations - Active Directory Threat Simulation & Remediation](Active_Directory_Folder_Name_Here)
+* **Architecture & Emulation:** Deployed a Windows Server 2019 Domain Controller and executed Kerberoasting (T1558.003) and LSASS credential dumping (T1003.001) using Atomic Red Team.
+* **Detection (Blue):** Engineered custom Level 12 Wazuh rules targeting RC4 ticket encryption and Sysmon Event ID 10 process access, translating the logic into vendor-neutral Sigma rules.
+* **Remediation & Purple Teaming:** Disabled legacy RC4 Kerberos encryption domain-wide via Group Policy and enforced Windows Defender ASR rules, verifying complete neutralization through iterative re-testing.
+
+### 🔗 [Project 3: Suricata Network Intrusion Detection with Wazuh & Splunk](Network_Intrusion_Detection)
+* **Network Visibility:** Deployed Suricata as an IDS to capture raw network flow telemetry and alert on volumetric reconnaissance (Nmap SYN scans).
+* **Dual-SIEM Pipeline:** Ingested `eve.json` network logs into both Wazuh for signature-driven alerting and Splunk for statistical threat hunting.
+* **Threat Hunting & Triage:** Authored SPL queries to extract anomalous process paths (`props.conf` XML parsing) and correlated network top-talkers with endpoint execution logs.
 
 ---
 
