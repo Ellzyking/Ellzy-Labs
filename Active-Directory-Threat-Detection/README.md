@@ -1,5 +1,6 @@
 # Project 2: Purple Team Operations – Active Directory Threat Simulation & Remediation
-> **Executive Report:** [📄 Download Full Technical Project Report (PDF)](https://github.com/Ellzyking/Ellzy-Labs/blob/main/Project_2_Purple_Team_Operations__Active_Directory_Threat_Simulation__Remediation.pdf)
+> **Executive Report:** [📄 Download Full Technical Project Report (PDF)](https://github.com/Ellzyking/Ellzy-Labs/blob/81f263c3d44645e423721f7d308aa7f09a9040f1/Active-Directory-Threat-Detection/Project_2_Purple_Team_Operations__Active_Directory_Threat_Simulation__Remediation.pdf)
+>
 ## 1. Executive Summary
 
 Active Directory (AD) is the primary identity provider for the enterprise, making it a high-priority target for advanced persistent threats (APTs). Because default Windows security auditing often obscures critical security events within massive volumes of benign background noise, organizations face severe visibility gaps.
