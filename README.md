@@ -1,6 +1,6 @@
 # Hi, I'm Elliot! 👋
 
-### **Cybersecurity Analyst | Detection Engineer**
+### **Cybersecurity Analyst | SOC | Detection Engineering | SIEM & Network Security**
 
 Welcome to my cybersecurity portfolio! I specialize in Active Directory security, SIEM detection engineering, and adversary emulation. Below you will find my hands-on laboratory environments, custom detection rules, and verified security architecture projects.
 
