@@ -14,7 +14,7 @@ The environment was constructed entirely within Oracle VirtualBox on an isolated
 *   **Description:** Threat actors systematically guess passwords to gain access to valid accounts. In a corporate environment, Server Message Block (SMB) on port 445 is a prime target because it is frequently exposed internally for file sharing and active directory authentication.
 
 ## 4. Attack Simulation
-efore executing the attack, several modern Windows 11 default defenses had to be disabled to simulate a vulnerable legacy server and ensure the OS would process a continuous stream of authentication attempts.
+Before executing the attack, several modern Windows 11 default defenses had to be disabled to simulate a vulnerable legacy server and ensure the OS would process a continuous stream of authentication attempts.
 
 **Step 1: Bypassing Windows 24H2 Defenses**
 By default, Windows 11 24H2 enforces an SMB rate-limiter that intentionally delays failed NTLM authentication attempts by 2 seconds to break brute-force tools. I disabled this via an elevated PowerShell session:
