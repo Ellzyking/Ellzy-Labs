@@ -200,8 +200,7 @@ When Phase 2 detections (100002 or 100004) trigger in an unhardened or partially
 ### Recommended Enterprise Mitigations (Architectural Defense)
 
 - **Decommission RC4 Encryption:** Enforce AES-128 and AES-256 for Kerberos encryption domain-wide via Group Policy (`Network security: Configure encryption types allowed for Kerberos`). Completely disable DES and RC4 encryption types.
-
-<img src="https://i.imgur.com/mWzj5ck.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/07-rc4-encryption.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 - **Service Account Hardening:** Transition standard service accounts to Group Managed Service Accounts (gMSA). gMSAs utilize 128-character, randomly generated passwords that automatically rotate, rendering offline dictionary cracking ineffective.
 - **Enable Microsoft Defender Credential Guard:** Use virtualization-based security (VBS) on Windows endpoints to isolate credential secrets, preventing them from being accessed directly via the standard LSASS process. *Note: While it significantly reduces the attack surface, it does not block every form of credential access.*
