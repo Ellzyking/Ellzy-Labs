@@ -205,8 +205,7 @@ When Phase 2 detections (100002 or 100004) trigger in an unhardened or partially
 - **Service Account Hardening:** Transition standard service accounts to Group Managed Service Accounts (gMSA). gMSAs utilize 128-character, randomly generated passwords that automatically rotate, rendering offline dictionary cracking ineffective.
 - **Enable Microsoft Defender Credential Guard:** Use virtualization-based security (VBS) on Windows endpoints to isolate credential secrets, preventing them from being accessed directly via the standard LSASS process. *Note: While it significantly reduces the attack surface, it does not block every form of credential access.*
 - **Attack Surface Reduction (ASR):** Enable the Windows Defender ASR rule `Block credential stealing from the Windows local security authority subsystem` (`9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2`).
-<img src="https://i.imgur.com/TljKLyS.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/08-enable-asr-rule.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 ### 9. What This Demonstrated
 * **Enterprise Infrastructure Deployment:** Built and configured a Windows Server 2019 Domain Controller to serve as a realistic target environment.
 * **Adversarial Emulation:** Executed live, mapped MITRE ATT&CK techniques (T1558.003 Kerberoasting, T1003.001 OS Credential Dumping) using Atomic Red Team.
