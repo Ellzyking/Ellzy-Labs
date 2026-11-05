@@ -92,7 +92,7 @@ Atomic Red Team was used to execute credential access modules, invoking native L
 ```
 Invoke-AtomicTest T1003.001
 ```
-<img src="https://i.imgur.com/N2InIle.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/03-atomic-red-team-execute.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 #### Evidence: Sysmon Kernel-Level Process Access (Event 10)
 Native Windows event logs do not deeply monitor process-to-process access. I deployed Microsoft Sysmon to explicitly target `lsass.exe`. Sysmon captured Event ID 10 with `GrantedAccess: 0x1000`, indicating limited process-information access. This event alone does not prove LSASS memory was read; look for the `0x0010` memory-read bit in `GrantedAccess` (often appearing in combined masks like `0x1010`) and correlate with other evidence.
