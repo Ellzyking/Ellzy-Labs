@@ -329,4 +329,4 @@ Invoke-AtomicTest T1003.001
 - **SIEM Telemetry Proof:** Because the malicious script was blocked at the PowerShell parser stage before `rdrleakdiag.exe` could spawn or request a handle to `lsass.exe`, Sysmon recorded no new Event ID `10` entries for the test, and Wazuh Rule `100003` remained quiet.
 
 #### *Microsoft Defender / AMSI blocking the Atomic Red Team T1003.001-13 `rdrleakdiag.exe` LSASS dump execution (`Exit code: 1`).*
-<img src="https://i.imgur.com/DN5ezfk.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/13-microsoft-blockingART.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
