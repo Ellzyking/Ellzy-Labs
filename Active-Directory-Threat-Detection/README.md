@@ -300,7 +300,7 @@ PowerShell
 klist purge
 Invoke-AtomicTest T1558.003
 ```
-<img src="https://i.imgur.com/HPjfzyC.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/11-retesting-kebvalidation.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 #### Verification & Correlation with Phase 1
 
 - **Phase 1 Baseline (Vulnerable):** `Rubeus` successfully requested an RC4 ticket for `svc_sql`, extracted the `$krb5tgs$23$*svc_sql...` hash to the console, and generated Event ID `4769` (`TicketEncryptionType: 0x17`), triggering Wazuh Rule `100002` (Level 12).
