@@ -128,8 +128,7 @@ I configured the Windows 11 Wazuh agent (`ossec.conf`) to actively ingest the `M
 ```
 By splitting the detection, Rule 100003 acts as a broad tracker for all LSASS access, while Rule 100004 provides a high-fidelity alert specifically for the memory-read access masks (0x1010, 0x1410, 0x1fffff) observed during credential dumping."
 #### *Wazuh Level 12 Alert detecting potential LSASS process access via Sysmon telemetry.*
-<img src="https://i.imgur.com/4llgVnC.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/05-wazuh-sysmon-detection.png.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 ## 5. Vendor-Neutral Sigma Rule Translation
 
 To ensure portable detection across enterprise platforms (Splunk, Microsoft Sentinel, Elastic), I translated the Kerberoasting logic into a vendor-neutral Sigma rule, leveraging named filter groups for precise exclusion:
