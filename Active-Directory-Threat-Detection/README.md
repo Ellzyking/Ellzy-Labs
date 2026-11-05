@@ -169,7 +169,7 @@ level: high
 ## 6. Incident Response & SOC Triage Playbook
 
 When Phase 2 detections (100002 or 100004) trigger in an unhardened or partially hardened production environment, SOC analysts should follow this structured triage workflow:
-<img src="https://i.imgur.com/crfzuIS.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/06-incident-response-playbook.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 ### Playbook A: Kerberoasting Alert (Rule 100002 — Level 12)
 1. **Validate Source & Identity:** Inspect `data.win.eventdata.ipAddress` and `data.win.eventdata.targetUserName` in the Wazuh alert to identify which workstation and domain user requested the `0x17` TGS ticket.
 2. **Assess Target SPN Risk:** Query Active Directory for the targeted `data.win.eventdata.serviceName` (e.g., `svc_sql`). Check administrative group memberships (`Domain Admins`, `Backup Operators`), password age (`pwdLastSet`), and supported encryption attributes (`msDS-SupportedEncryptionTypes`).
