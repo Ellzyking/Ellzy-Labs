@@ -76,9 +76,8 @@ Native Event ID 4769 generates extreme background noise. Wazuh evaluates these e
 ```
 
 #### *Wazuh Level 12 Alert successfully isolating the malicious `0x17` ticket request while filtering out benign domain traffic.*
-<img src=""Disk Sanitization Steps"/>
 
-<img src="https://i.imgur.com/3yOe3cM.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/02-wazuh-detecting0x17.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 ### Scenario B: LSASS Credential Access (T1003.001)
 
