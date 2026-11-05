@@ -244,7 +244,7 @@ To immediately apply the policy across the domain and flush existing policy cach
 ```powershell
 gpupdate /force
 ```
-<img src="https://i.imgur.com/XFtwteI.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/09-rc4-disablement.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 #### The "Why" (Architectural Impact)
 
