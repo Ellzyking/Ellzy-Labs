@@ -45,7 +45,7 @@ Atomic Red Team (`Rubeus`) was utilized to request an RC4-encrypted (`0x17`) tic
 klist purge
 Invoke-AtomicTest T1558.003
 ```
-<img src="https://i.imgur.com/sdsqEsd.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/01-ad-rc4-request.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 #### Evidence: Kerberos Telemetry (Event 4769)
 
