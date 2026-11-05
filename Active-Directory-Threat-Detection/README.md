@@ -251,7 +251,7 @@ gpupdate /force
 By removing `RC4_HMAC_MD5` from the Kerberos Key Distribution Center (KDC) allowed encryption list on `DC01`, the KDC refuses to issue TGS tickets when an attacking tool explicitly requests encryption type `0x17`. Furthermore, forcing ticket negotiation up to `AES256_HMAC_SHA1` (`0x12`) introduces PBKDF2-like key derivation complexity, making offline brute-force cracking computationally infeasible when paired with strong service account passwords.
 
 #### Remediation 2: Blocking LSASS Credential Access (LSA Protection & Defender Enforcement)
-<img src="https://i.imgur.com/lUtCsEO.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/10-blocking-lsass.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 #### Technical Vulnerability
 
 The Local Security Authority Subsystem Service (`lsass.exe`) caches active authentication tokens, Kerberos tickets, and NTLM hashes in system memory. In an unhardened Windows environment, a local administrator with the `SeDebugPrivilege` right can invoke native Windows APIs (such as `MiniDumpWriteDump` via `comsvcs.dll` or diagnostic utilities like `rdrleakdiag.exe`) to open a handle to `lsass.exe` and dump its memory contents to disk.
