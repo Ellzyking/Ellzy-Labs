@@ -98,7 +98,8 @@ Invoke-AtomicTest T1003.001
 Native Windows event logs do not deeply monitor process-to-process access. I deployed Microsoft Sysmon to explicitly target `lsass.exe`. Sysmon captured Event ID 10 with `GrantedAccess: 0x1000`, indicating limited process-information access. This event alone does not prove LSASS memory was read; look for the `0x0010` memory-read bit in `GrantedAccess` (often appearing in combined masks like `0x1010`) and correlate with other evidence.
 
 #### *Execution of LSASS memory extraction techniques via Atomic Red Team.*
-<img src="https://i.imgur.com/fSQGHcF.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/04-execution-lsass.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 #### Rule: LSASS Process Access Detection (ID: 100003)
 
