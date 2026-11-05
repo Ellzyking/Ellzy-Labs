@@ -309,8 +309,7 @@ Invoke-AtomicTest T1558.003
 - **SIEM Telemetry Proof:** Because no RC4 (`0x17`) ticket was issued by the KDC, Wazuh Rule `100002` generated **0 new alerts**, confirming the vulnerability was closed at the protocol negotiation layer.
 
 #### *Rubeus failing with `InitializeSecurityContext failed` after Group Policy disabled RC4 Kerberos ticket negotiation on DC01.*
-<img src="https://i.imgur.com/4FQqS4p.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Active-Directory-Threat-Detection/12-rebeus-failed.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 ### Re-Test 2: LSASS Credential Access Validation (T1003.001)
 
 #### Execution
