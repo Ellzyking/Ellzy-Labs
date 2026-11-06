@@ -71,9 +71,7 @@ tcp.flags.syn == 1 && tcp.flags.ack == 0
 - **Flag Manipulation:** The packet headers confirmed `Flags: 0x002 (SYN)` with the `Acknowledgment: Not set`.
 - **Connection State:** Wireshark's TCP dissector flagged the streams as `[Conversation completeness: Incomplete, SYN_SENT (1)]`.
 - **Behavioral Anomaly:** The capture revealed dozens of isolated `SYN` requests originating from a single IP (`192.168.56.103`) targeting sequential ports on `192.168.56.110` within milliseconds—a clear indicator of automated port enumeration.
-
-<img src="https://i.imgur.com/WeBzfUU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/02-wiresahark-capture.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 ## Phase 3: Custom Detection Engineering
 
 While Suricata successfully logged the raw flow data, default signature sets (like Emerging Threats) are typically optimized for payload analysis and exploit delivery, meaning raw SYN packets often bypass default alert triggers.
