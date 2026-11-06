@@ -180,9 +180,7 @@ Building an enterprise-grade environment on limited virtual hardware required re
      
 3. **SIEM Binary Decoding Failures (`UTF-16LE`):**
     - **Symptom:** Windows Event Logs (`.evtx`) exported via PowerShell appeared in Splunk as broken binary hex (`\xFF\xFE\x00E...`).
-        
-      <img src="https://i.imgur.com/NoVPLT5.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-        
+       <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/16-intercepted-ingestion-pipeline.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>         
     - **Root Cause:** PowerShell's `Out-File` default encoding utilizes UTF-16LE, which Splunk's Linux backend could not natively parse, treating it as a raw `ElfFile`.
     - **Resolution:** Intercepted the ingestion pipeline at the `props.conf` level via Splunk Web, forcing the `CHARSET` to `UTF-16LE` and configuring `KV_MODE=xml` combined with regex event breaking (`(?=<Event)`) to successfully parse the nested XML schema.
 
