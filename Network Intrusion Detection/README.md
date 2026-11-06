@@ -134,9 +134,7 @@ source="Security.xml"
 | sort - count
 ```
 - **Finding:** "Correlated Suricata network alerts with endpoint logs to confirm the malicious payload reached the target application."
- 
-<img src="https://i.imgur.com/DfYkShJ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+ <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/06-splunk-endpoint-logs.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 **Hunt 3: Rare Processes (Long-Tail Anomaly Detection - T1059)**
 Because adversaries frequently execute custom payloads or rarely used LOLBins (Living-off-the-Land Binaries), Sysmon Event ID 1 (Process Creation) logs were analyzed using long-tail statistical filtering to isolate outlier executables.
 
