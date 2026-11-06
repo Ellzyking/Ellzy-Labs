@@ -41,7 +41,7 @@ nxc smb 192.168.56.101 -u svc_test_account -p passwords.txt --local-auth
 
 ## 5. Evidence
 The attack successfully generated Event ID 4625 (Failed Logon) logs corresponding to the incorrect passwords in the wordlist, immediately followed by an Event ID 4624 (Successful Logon) when the correct password was executed. 
-<img src="https://i.imgur.com/nZ7kmAk.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Window-Brute-Force/01-failed-logon.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
  
 : Event ID 4625 capturing the attacker IP (`192.168.56.103`), the targeted account (`svc_test_account`), and the `0xc000006a` (bad password) subStatus code.*
 
