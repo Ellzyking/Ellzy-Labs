@@ -175,8 +175,8 @@ Building an enterprise-grade environment on limited virtual hardware required re
       
     - **Resolution:** I re-deployed the container with the appended environment variable `-e "SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com"`.
       <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/14-redeplyed-container-appended.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-      
-     <img src="https://i.imgur.com/jhZo9PN.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
+      <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/15-splunk-broken-binary-hex.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
      
 3. **SIEM Binary Decoding Failures (`UTF-16LE`):**
     - **Symptom:** Windows Event Logs (`.evtx`) exported via PowerShell appeared in Splunk as broken binary hex (`\xFF\xFE\x00E...`).
