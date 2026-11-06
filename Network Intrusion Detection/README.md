@@ -158,10 +158,10 @@ Building an enterprise-grade environment on limited virtual hardware required re
 1. **Linux LVM Disk Exhaustion (Splunk Containerization):**
     - **Symptom:** Docker container extraction failed with `no space left on device`.
       <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/08-docker-failed.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+      
     - **Root Cause:** The default Ubuntu LVM installation allocated only 12GB to the root volume (`ubuntu--vg-ubuntu--lv`), leaving the remainder of the virtual disk unallocated.
-         <img src="https://i.imgur.com/ziqXD5p.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+     <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/09-unallocated-virtual-disk.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+     
     - **Resolution:** Executed `lvextend -l +100%FREE` and `resize2fs` to dynamically expand the live root filesystem to 23GB without downtime, successfully accommodating Splunk's heavy storage requirements
        <img src="https://i.imgur.com/Vsh23xr.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
         
