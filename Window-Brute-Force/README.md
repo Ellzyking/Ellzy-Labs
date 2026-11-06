@@ -49,7 +49,7 @@ The attack successfully generated Event ID 4625 (Failed Logon) logs correspondin
 : Event ID 4624 showing the final successful authentication following the burst of failures.*
 
 ## 6. Detection
-To accurately identify this attack without flooding the SOC with false positives, I engineered a custom detection rule that looks for 5 identical failures from the exact same source IP within 60 seconds.<img                                                                                   <img 
+To accurately identify this attack without flooding the SOC with false positives, I engineered a custom detection rule that looks for 5 identical failures from the exact same source IP within 60 seconds.
 <img src="https://i.imgur.com/YOqlSqt.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
 : Wazuh Dashboard confirming the custom correlation rule (Rule ID: 100001) successfully fired in response to the attack simulation.*
 
