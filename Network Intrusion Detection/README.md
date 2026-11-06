@@ -100,12 +100,7 @@ With the detection engine validated, telemetry was piped into two distinct SIEM 
 ### 4.1 Wazuh Pipeline Integration
 
 The Wazuh Agent was configured via `<localfile>` in `ossec.conf` to continuously ingest Suricata's Extensible Event Format (`eve.json`). Wazuh's native decoders automatically parsed the JSON arrays, providing a low-latency, centralized dashboard for immediate triage.
-
-<img src="" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
-<img src="https://i.imgur.com/vVrHlv5.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/74ca0aff50e2fe1512fb2a813e78f1faa10271de/Network%20Intrusion%20Detection/04-wazuh-dashboard-triage.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
 ### 4.2 Splunk Analytics & SPL Threat Hunting
 
