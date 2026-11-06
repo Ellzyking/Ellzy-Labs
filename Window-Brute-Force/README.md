@@ -1,5 +1,5 @@
 # Project 1: Windows SMB Brute Force Detection (T1110)
-https://github.com/Ellzyking/Ellzy-Labs/blob/1d07a36787cfa72dd3cff4ed32085940f10312fa/Window-Brute-Force/Project_1_Windows_SMB_Brute_Force_Detection_(T1110).pdf
+> **Executive Report:** [📄 Download Full Technical Project Report (PDF) ](https://github.com/Ellzyking/Ellzy-Labs/blob/1d07a36787cfa72dd3cff4ed32085940f10312fa/Window-Brute-Force/Project_1_Windows_SMB_Brute_Force_Detection_(T1110).pdf)
 
 ## 1. Overview
 This project focuses on engineering custom detections for network-based brute-force attacks. As default SIEM rules often generate extreme alert fatigue by alerting on every single failed login, the objective of this lab was to simulate a targeted SMB brute-force attack, analyze the resulting Windows Security log telemetry, and engineer state-tracking correlation rules. By utilizing Wazuh and Sysmon, I developed both a Wazuh XML rule and a vendor-neutral Sigma rule that detect the specific behavior of a brute-force attack (frequency and threshold) rather than isolated incidents.
