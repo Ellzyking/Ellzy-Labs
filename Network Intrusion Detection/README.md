@@ -165,7 +165,8 @@ Building an enterprise-grade environment on limited virtual hardware required re
     - **Resolution:** Executed `lvextend -l +100%FREE` and `resize2fs` to dynamically expand the live root filesystem to 23GB without downtime, successfully accommodating Splunk's heavy storage requirements
       <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/10-alloting-23g-root-filesystem.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
       
-        <img src="https://i.imgur.com/JlIokdf.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+   <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/11-alloted-23g.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+
 2. **Splunk Headless License Acceptance:**
     - **Symptom:** Splunk Docker container exited immediately with `License not accepted`.
     - **Root Cause:** Newer Splunk Docker image builds implemented a strict requirement for a secondary license flag covering general terms.
