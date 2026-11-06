@@ -44,8 +44,8 @@ The attack successfully generated Event ID 4625 (Failed Logon) logs correspondin
 <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Window-Brute-Force/01-failed-logon.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
  
 : Event ID 4625 capturing the attacker IP (`192.168.56.103`), the targeted account (`svc_test_account`), and the `0xc000006a` (bad password) subStatus code.*
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Window-Brute-Force/02-attacker-ip-target-acc-bad-passwd.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
 
-<img src="https://i.imgur.com/8PuIMQR.png" alt="image" src="https://github.com/user-attachments/assets/22dcf477-5f3a-4d35-b19e-347244e4319f" />
 : Event ID 4624 showing the final successful authentication following the burst of failures.*
 
 ## 6. Detection
