@@ -53,9 +53,7 @@ sudo nmap -sS -p 1-1024 -T4 -v 192.168.56.110
 ```
 
 By manipulating the TCP handshake, the attacker sends only the initial `SYN` packet. When the target replies with `SYN-ACK`, the attacker abruptly sends a `RST` (Reset) packet. Because the session never reaches the `ESTABLISHED` state, the Windows kernel drops the socket connection before passing it to the application layer, evades default logging native OS audit logs.
-
-<img src="https://i.imgur.com/NlKwH0j.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/01-recon-against-dco1.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 ## Phase 2: Protocol Forensics & Packet Dissection
 
 To prove the evasion mechanics at Layer 4, the raw traffic was captured via `tcpdump` on the Ubuntu sensor's promiscuous interface and analyzed in Wireshark.
