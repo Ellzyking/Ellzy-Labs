@@ -150,9 +150,7 @@ source="Sysmon.xml"
 
 ```
 - **Finding:** "Extracted the executed process paths, revealing an anomalous execution sequence spawned by the compromised service."
-
-<img src="https://i.imgur.com/7DTmdvr.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/07-solunk-extracted-process-paths.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 ## Engineering Challenges & Root Cause Analysis
 
 Building an enterprise-grade environment on limited virtual hardware required resolving several complex system administration roadblocks:
