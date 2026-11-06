@@ -118,9 +118,7 @@ source="/var/log/suricata/eve.json" (event_type=flow OR event_type=alert)
 | head 10
 ```
 - **Finding:** Identified a high volume of inbound TCP SYN packets from a single source IP, confirming automated port scanning activity.
-
-<img src="https://i.imgur.com/4nI1BFI.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-
+<img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/05-splunk-tcp-syn-packets.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 **Hunt 2: Logon Activity Tracking (Credential Abuse)**
 Pivoting from network data to endpoint telemetry, Windows Security logs (Event ID 4624/4625) were analyzed to track authentication behavior across the domain, grouping attempts by source IP and target account to identify potential brute-force or password spraying activity.
 
