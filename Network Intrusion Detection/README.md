@@ -170,8 +170,9 @@ Building an enterprise-grade environment on limited virtual hardware required re
 2. **Splunk Headless License Acceptance:**
     - **Symptom:** Splunk Docker container exited immediately with `License not accepted`.
     - **Root Cause:** Newer Splunk Docker image builds implemented a strict requirement for a secondary license flag covering general terms.
-     <img src="https://i.imgur.com/kVhCg2G.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-        
+      
+       <img src="https://github.com/Ellzyking/Ellzy-Labs/blob/main/Network%20Intrusion%20Detection/13-redeployed-container.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+      
     - **Resolution:** I re-deployed the container with the appended environment variable `-e "SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com"`.
       
      <img src="https://i.imgur.com/tu6J9p1.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
