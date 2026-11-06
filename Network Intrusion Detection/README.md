@@ -88,7 +88,8 @@ alert tcp any any -> $HOME_NET any (msg:"CUSTOM DETECT - Possible Nmap SYN Port 
 
 **Detection Logic:**
 - "The rule uses `flags:S,12` to match TCP SYN packets while masking the two reserved bits, targeting raw packets rather than established sessions. The threshold tracks the volume of matching packets—triggering an alert after 20 packets—rather than counting unique destination ports. Note: High-volume legitimate applications or misconfigured network devices generating rapid SYN packets could trigger false positives."
-
+- 
+<img src=""80%" width="80%" alt="Disk Sanitization Steps"/>
 
 <img src="https://i.imgur.com/IopGWLW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
